@@ -1,7 +1,13 @@
 micronaut:
   application:
     name: mockPaymentServer
+  server:
+    port: 8090
 netty:
   default:
     allocator:
       max-order: 3
+
+auth:
+  user: "admin"
+  pass: "admin"
