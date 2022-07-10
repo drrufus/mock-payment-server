@@ -19,9 +19,9 @@ data class Subscription(
     @JsonProperty("last_payment") val lastPaymentInfo: Payment,
     @JsonProperty("next_payment") val nextPaymentInfo: Payment?,
     @JsonProperty("payment_information") val paymentInformation: PaymentInfo,
+    val quantity: Int,
     // extra stuff:
-    @JsonProperty("product_name") val productName: String,
-    @JsonProperty("subscription_period") val subscriptionPeriod: SubscriptionPeriod,
+    val keys: Set<String>,
 ) {
 
     @Introspected
