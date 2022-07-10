@@ -22,6 +22,7 @@ data class Subscription(
     val quantity: Int,
     // extra stuff:
     val keys: Set<String>,
+    val pausedAt: String?,
 ) {
 
     @Introspected
@@ -44,7 +45,11 @@ data class Subscription(
 }
 
 enum class SubscriptionState {
-    ACTIVE,
+    active,
+    deleted,
+    paused,
+    past_due,
+    trialing,
 }
 
 enum class Currency {
@@ -54,11 +59,6 @@ enum class Currency {
 enum class PaymentMethod {
     CARD,
     PAYPAL,
-}
-
-enum class SubscriptionPeriod {
-    MONTHLY,
-    ANNUAL,
 }
 
 enum class CardType {
