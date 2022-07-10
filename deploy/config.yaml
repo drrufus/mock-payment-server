@@ -8,7 +8,7 @@ common:
   image_name: "drrufus/mock-payment-service"
 
 prod:
-  host: drrufus.ru
+  host: mock.drrufus.ru
   templates:
     - template: deployment.yaml.j2
     - template: service.yaml.j2

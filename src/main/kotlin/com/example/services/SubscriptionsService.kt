@@ -24,7 +24,7 @@ class SubscriptionsService {
             Subscription(
                 abs(Random.nextLong()),
                 userId,
-                abs(Random.nextLong()),
+                listOf(31643L, 31644L).random(),
                 "user-$userId@domain.io",
                 SubscriptionState.ACTIVE,
                 formatSignupDate(LocalDateTime.parse("2022-05-04T11:50:55")),
