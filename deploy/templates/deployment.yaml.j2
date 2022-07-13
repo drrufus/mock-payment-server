@@ -19,3 +19,10 @@ spec:
         image: {{ image_name }}
         ports:
         - containerPort: 8090
+        resources:
+          requests:
+            cpu: {{ requests_cpu | default('400m') }}
+            memory: {{ requests_memory | default('400Mi') }}
+          limits:
+            cpu: {{ limits_cpu | default('400m') }}
+            memory: {{ limits_memory | default('400Mi') }}

@@ -6,4 +6,4 @@ RUN ./gradlew --no-daemon shadowJar
 FROM openjdk:11
 COPY --from=0 /app/build/libs/mock-payment-server-0.1-all.jar /app/app.jar
 WORKDIR /app
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-XX:MaxRAMPercentage=80.0", "-XshowSettings:all", "-jar", "app.jar"]
