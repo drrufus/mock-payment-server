@@ -24,6 +24,13 @@ class SubscriptionsController(
         return subscriptionsService.getUserSubscriptions(userId)
     }
 
+    @Get("/{id}")
+    fun getSubscriptionById(@PathVariable id: Long): Subscription {
+        logger.info("GET /subscriptions/$id")
+        return subscriptionsService.getSubscriptionById(id)
+            ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "Subscription #$id not found")
+    }
+
     @Post("/{id}/pause")
     fun pauseSubscription(@PathVariable id: Long) {
         logger.info("POST /subscriptions/$id/pause")

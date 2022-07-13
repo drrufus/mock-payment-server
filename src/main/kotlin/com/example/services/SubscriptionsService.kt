@@ -23,6 +23,10 @@ class SubscriptionsService {
         }
     }
 
+    fun getSubscriptionById(id: Long): Subscription? {
+        return subscriptions[id]
+    }
+
     fun pauseSubscription(subscriptionId: Long) {
         val sub = subscriptions[subscriptionId]!!
         if (sub.state != SubscriptionState.active) {
