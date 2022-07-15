@@ -1,11 +1,8 @@
 package com.example.services
 
 import com.example.dto.*
-import com.example.dto.Currency
 import jakarta.inject.Singleton
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.math.abs
 import kotlin.random.Random
 
 @Singleton
@@ -29,59 +26,48 @@ class SubscriptionsService {
 
     fun pauseSubscription(subscriptionId: Long) {
         val sub = subscriptions[subscriptionId]!!
-        if (sub.state != SubscriptionState.active) {
-            throw PauseException("Unable to pause the subscription with state=${sub.state}")
+        if (sub.status != SubscriptionState.active) {
+            throw PauseException("Unable to pause the subscription with state=${sub.status}")
         }
         subscriptions[subscriptionId] = sub.copy(
-            state = SubscriptionState.paused,
-            pausedAt = LocalDateTime.now().toString(),
+            status = SubscriptionState.paused,
+            pausedSince = LocalDateTime.now().toString(),
         )
     }
 
     fun unpauseSubscription(subscriptionId: Long) {
         val sub = subscriptions[subscriptionId]!!
-        if (sub.state != SubscriptionState.paused) {
-            throw UnpauseException("Unable to unpause the subscription with state=${sub.state}")
+        if (sub.status != SubscriptionState.paused) {
+            throw UnpauseException("Unable to unpause the subscription with state=${sub.status}")
         }
         subscriptions[subscriptionId] = sub.copy(
-            state = SubscriptionState.active,
-            pausedAt = null,
+            status = SubscriptionState.active,
+            pausedSince = null,
         )
     }
 
     private fun generateUserSubscription(userId: Long, index: Int): Subscription {
         val quantity = Random.nextInt(5) + 1
-        val keys = List(quantity) { generateKey() }.toSet()
+        val keys = List(quantity) { Subscription.License(
+            generateKey(),
+            listOf("SubProduct A", "SubProduct B", "SubProduct C").random(),
+            LocalDateTime.parse("2022-05-05T11:50:55").toString(),
+            null,
+        ) }
         val state = listOf(SubscriptionState.active, SubscriptionState.paused).random()
         return Subscription(
             1000000 + userId + index,
             userId,
             listOf(31643L, 31644L).random(),
-            "user-$userId@domain.io",
             state,
-            formatSignupDate(LocalDateTime.parse("2022-05-04T11:50:55")),
-            Subscription.Payment(
-                abs(Random.nextDouble()),
-                Currency.USD,
-                formatPaymentDate(LocalDateTime.parse("2022-05-05T11:50:55")),
-            ),
-            Subscription.Payment(
-                abs(Random.nextDouble()),
-                Currency.USD,
-                formatPaymentDate(LocalDateTime.parse("2023-05-05T11:50:55")),
-            ),
-            Subscription.PaymentInfo(
-                PaymentMethod.CARD,
-                CardType.VISA,
-                "4242",
-                "12/27",
-            ),
-            quantity,
-            keys,
+            listOf(LicenseType.personal, LicenseType.commercial).random(),
+            LocalDateTime.parse("2022-05-05T11:50:55").toString(),
             when (state) {
-                SubscriptionState.paused -> LocalDateTime.now().toString()
+                SubscriptionState.paused -> LocalDateTime.parse("2022-06-05T11:50:55").toString()
                 else -> null
-            }
+            },
+            null,
+            keys,
         ).also { subscription ->
             subscriptions[subscription.id] = subscription
             if (userSubscriptions[userId] == null) {
@@ -89,16 +75,6 @@ class SubscriptionsService {
             }
             userSubscriptions[userId]!!.add(subscription.id)
         }
-    }
-
-    private fun formatSignupDate(date: LocalDateTime): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        return formatter.format(date)
-    }
-
-    private fun formatPaymentDate(date: LocalDateTime): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        return formatter.format(date)
     }
 
     private fun generateKey(): String {

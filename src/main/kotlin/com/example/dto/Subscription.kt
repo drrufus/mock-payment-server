@@ -1,47 +1,30 @@
 package com.example.dto
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
-import java.time.LocalDate
-import java.util.Date
 
 @Introspected
 @Serdeable
 data class Subscription(
-    @JsonProperty("subscription_id") val id: Long,
-    @JsonProperty("user_id") val userId: Long,
-    @JsonProperty("plan_id") val planId: Long,
-    @JsonProperty("user_email") val userEmail: String,
-    val state: SubscriptionState,
-    @JsonProperty("signup_date") val signupDate: String,
-    @JsonProperty("last_payment") val lastPaymentInfo: Payment,
-    @JsonProperty("next_payment") val nextPaymentInfo: Payment?,
-    @JsonProperty("payment_information") val paymentInformation: PaymentInfo,
-    val quantity: Int,
-    // extra stuff:
-    val keys: Set<String>,
-    val pausedAt: String?,
+    @JsonProperty("paddle_subscription_id") val id: Long,
+    @JsonProperty("paddle_user_id") val userId: Long,
+    @JsonProperty("paddle_plan_id") val planId: Long,
+    val status: SubscriptionState,
+    @JsonProperty("license_type") val licenseType: LicenseType,
+    @JsonProperty("start_time") val startTime: String,
+    @JsonProperty("paused_since") val pausedSince: String?,
+    @JsonProperty("cancelled_since") val cancelledSince: String?,
+    @JsonProperty("serials") val licenses: List<License>,
 ) {
-
     @Introspected
     @Serdeable
-    data class Payment(
-        val amount: Double,
-        val currency: Currency,
-        val date: String,
+    data class License(
+        val serial: String,
+        @JsonProperty("plugin_name") val pluginName: String,
+        @JsonProperty("generation_time") val generationTime: String,
+        @JsonProperty("deactivation_time") val deactivationTime: String?,
     )
-
-    @Introspected
-    @Serdeable
-    data class PaymentInfo(
-        @JsonProperty("payment_method") val method: PaymentMethod,
-        @JsonProperty("card_type") val cardType: CardType?,
-        @JsonProperty("last_four_digits") val ending: String,
-        @JsonProperty("expiry_date") val expiration: String,
-    )
-
 }
 
 enum class SubscriptionState {
@@ -52,15 +35,7 @@ enum class SubscriptionState {
     trialing,
 }
 
-enum class Currency {
-    USD,
-}
-
-enum class PaymentMethod {
-    CARD,
-    PAYPAL,
-}
-
-enum class CardType {
-    VISA,
+enum class LicenseType {
+    personal,
+    commercial,
 }
