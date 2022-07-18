@@ -24,25 +24,27 @@ class SubscriptionsService {
         return subscriptions[id]
     }
 
-    fun pauseSubscription(subscriptionId: Long) {
+    fun cancelSubscription(subscriptionId: Long) {
         val sub = subscriptions[subscriptionId]!!
         if (sub.status != SubscriptionState.active) {
-            throw PauseException("Unable to pause the subscription with state=${sub.status}")
+            throw CancelException("Unable to cancel the subscription with state=${sub.status}")
         }
         subscriptions[subscriptionId] = sub.copy(
-            status = SubscriptionState.paused,
-            pausedSince = LocalDateTime.now().toString(),
+            status = SubscriptionState.deleted,
+            cancelledSince = LocalDateTime.now().toString(),
+            nextPaymentDate = null,
         )
     }
 
-    fun unpauseSubscription(subscriptionId: Long) {
+    fun uncancelSubscription(subscriptionId: Long) {
         val sub = subscriptions[subscriptionId]!!
-        if (sub.status != SubscriptionState.paused) {
-            throw UnpauseException("Unable to unpause the subscription with state=${sub.status}")
+        if (sub.status != SubscriptionState.deleted) {
+            throw UncancelException("Unable to uncancel the subscription with state=${sub.status}")
         }
         subscriptions[subscriptionId] = sub.copy(
             status = SubscriptionState.active,
-            pausedSince = null,
+            cancelledSince = null,
+            nextPaymentDate = LocalDateTime.parse("2023-05-05T11:50:55").toString(),
         )
     }
 
@@ -54,7 +56,7 @@ class SubscriptionsService {
             LocalDateTime.parse("2022-05-05T11:50:55").toString(),
             null,
         ) }
-        val state = listOf(SubscriptionState.active, SubscriptionState.paused).random()
+        val state = listOf(SubscriptionState.active, SubscriptionState.deleted).random()
         return Subscription(
             1000000 + userId + index,
             userId,
@@ -62,12 +64,15 @@ class SubscriptionsService {
             state,
             listOf(LicenseType.personal, LicenseType.commercial).random(),
             LocalDateTime.parse("2022-05-05T11:50:55").toString(),
+            null,
             when (state) {
-                SubscriptionState.paused -> LocalDateTime.parse("2022-06-05T11:50:55").toString()
+                SubscriptionState.deleted -> LocalDateTime.parse("2022-06-05T11:50:55").toString()
                 else -> null
             },
-            null,
             keys,
+            LocalDateTime.parse("2023-05-05T11:50:55").toString(),
+            if (state == SubscriptionState.active) LocalDateTime.parse("2023-05-05T11:50:55").toString() else null,
+            null,
         ).also { subscription ->
             subscriptions[subscription.id] = subscription
             if (userSubscriptions[userId] == null) {
@@ -86,5 +91,5 @@ class SubscriptionsService {
 
 }
 
-class PauseException(message: String) : RuntimeException(message)
-class UnpauseException(message: String) : RuntimeException(message)
+class CancelException(message: String) : RuntimeException(message)
+class UncancelException(message: String) : RuntimeException(message)

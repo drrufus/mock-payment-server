@@ -1,9 +1,9 @@
 package com.example.controllers
 
 import com.example.dto.Subscription
-import com.example.services.PauseException
+import com.example.services.CancelException
 import com.example.services.SubscriptionsService
-import com.example.services.UnpauseException
+import com.example.services.UncancelException
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.*
 import io.micronaut.http.exceptions.HttpStatusException
@@ -31,22 +31,22 @@ class SubscriptionsController(
             ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "Subscription #$id not found")
     }
 
-    @Post("/{id}/pause")
-    fun pauseSubscription(@PathVariable id: Long) {
-        logger.info("POST /subscriptions/$id/pause")
+    @Post("/{id}/cancel")
+    fun cancelSubscription(@PathVariable id: Long) {
+        logger.info("POST /subscriptions/$id/cancel")
         try {
-            subscriptionsService.pauseSubscription(id)
-        } catch (e: PauseException) {
+            subscriptionsService.cancelSubscription(id)
+        } catch (e: CancelException) {
             throw HttpStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
     }
 
-    @Post("/{id}/unpause")
-    fun unpauseSubscription(@PathVariable id: Long) {
-        logger.info("POST /subscriptions/$id/unpause")
+    @Post("/{id}/uncancel")
+    fun uncancelSubscription(@PathVariable id: Long) {
+        logger.info("POST /subscriptions/$id/uncancel")
         try {
-            subscriptionsService.unpauseSubscription(id)
-        } catch (e: UnpauseException) {
+            subscriptionsService.uncancelSubscription(id)
+        } catch (e: UncancelException) {
             throw HttpStatusException(HttpStatus.BAD_REQUEST, e.message)
         }
     }

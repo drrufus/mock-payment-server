@@ -16,6 +16,9 @@ data class Subscription(
     @JsonProperty("paused_since") val pausedSince: String?,
     @JsonProperty("cancelled_since") val cancelledSince: String?,
     @JsonProperty("serials") val licenses: List<License>,
+    @JsonProperty("active_until") val activeUntil: String,
+    @JsonProperty("next_payment_date") val nextPaymentDate: String?,
+    @JsonProperty("failed_payment_time") val failedPaymentDate: String?,
 ) {
     @Introspected
     @Serdeable
