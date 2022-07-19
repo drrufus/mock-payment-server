@@ -19,16 +19,17 @@ class SubscriptionsController(
 ) {
 
     @Get
-    fun getUserSubscriptions(@QueryValue userId: Long): List<Subscription> {
-        logger.info("GET /subscriptions?userId=$userId")
-        return subscriptionsService.getUserSubscriptions(userId)
-    }
-
-    @Get("/{id}")
-    fun getSubscriptionById(@PathVariable id: Long): Subscription {
-        logger.info("GET /subscriptions/$id")
-        return subscriptionsService.getSubscriptionById(id)
-            ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "Subscription #$id not found")
+    fun getUserSubscriptions(@QueryValue("paddle_user_id") userId: Long?, @QueryValue("paddle_subscription_id") subscriptionId: Long?): Any {
+        if (userId != null) {
+            logger.info("GET /subscriptions?paddle_user_id=$userId")
+            return subscriptionsService.getUserSubscriptions(userId)
+        }
+        if (subscriptionId != null) {
+            logger.info("GET /subscriptions?paddle_subscription_id=$subscriptionId")
+            return subscriptionsService.getSubscriptionById(subscriptionId)
+                ?: throw HttpStatusException(HttpStatus.NOT_FOUND, "Subscription #$subscriptionId not found")
+        }
+        throw HttpStatusException(HttpStatus.BAD_REQUEST, "Bad request")
     }
 
     @Post("/{id}/cancel")
