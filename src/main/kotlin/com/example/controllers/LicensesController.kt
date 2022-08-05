@@ -7,11 +7,11 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Produces
 import io.micronaut.http.exceptions.HttpStatusException
 import io.micronaut.http.server.types.files.StreamedFile
 import io.micronaut.security.annotation.Secured
 import io.micronaut.security.rules.SecurityRule
-import io.micronaut.serde.annotation.Serdeable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -22,17 +22,16 @@ class LicensesController(
 ) {
 
     @Post("/")
-    fun getLicenses(@Body request: GetLicensesRequest): StreamedFile {
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    fun getLicenses(@Body request: GetLicensesRequest): ByteArray {
         logger.info("POST /licenses [$request]")
         return when (request.keys.size) {
             0 -> throw HttpStatusException(HttpStatus.BAD_REQUEST, "Missing keys")
             1 -> {
-                val stream = loader.getResourceAsStream("sample-license.txt").get()
-                StreamedFile(stream, MediaType.TEXT_PLAIN_TYPE)
+                loader.getResourceAsStream("sample-license.txt").get().readBytes()
             }
             else -> {
-                val stream = loader.getResourceAsStream("sample-archive.zip").get()
-                StreamedFile(stream, MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                loader.getResourceAsStream("sample-archive.zip").get().readBytes()
             }
         }
     }
@@ -44,7 +43,6 @@ class LicensesController(
 }
 
 @Introspected
-@Serdeable
 data class GetLicensesRequest(
     val hwid: String,
     val keys: List<String>,
