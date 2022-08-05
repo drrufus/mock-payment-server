@@ -26,10 +26,11 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.reactor:micronaut-reactor")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut:micronaut-http-server-netty")
 
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
@@ -57,7 +58,7 @@ tasks {
 }
 graalvmNative.toolchainDetection.set(false)
 micronaut {
-    runtime("netty")
+    runtime("lambda_java")
     testRuntime("junit5")
     processing {
         incremental(true)

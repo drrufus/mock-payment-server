@@ -1,6 +1,5 @@
 package com.example.controllers
 
-import com.example.dto.Subscription
 import com.example.services.CancelException
 import com.example.services.SubscriptionsService
 import com.example.services.UncancelException

@@ -2,10 +2,8 @@ package com.example.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.core.annotation.Introspected
-import io.micronaut.serde.annotation.Serdeable
 
 @Introspected
-@Serdeable
 data class Subscription(
     @JsonProperty("paddle_subscription_id") val id: Long,
     @JsonProperty("paddle_user_id") val userId: Long,
@@ -21,7 +19,6 @@ data class Subscription(
     @JsonProperty("failed_payment_time") val failedPaymentDate: String?,
 ) {
     @Introspected
-    @Serdeable
     data class License(
         val serial: String,
         @JsonProperty("plugin_name") val pluginName: String,
